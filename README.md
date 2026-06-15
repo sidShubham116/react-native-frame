@@ -10,12 +10,6 @@ A lightweight, theme-driven UI component library for React Native and Expo — b
   <img src="https://raw.githubusercontent.com/sidShubham116/react-native-frame/main/assets/demo.gif" width="300" alt="react-native-frame live demo" />
 </p>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/sidShubham116/react-native-frame/main/assets/showcase-1.png" width="45%" alt="Buttons, Input, Avatar, Badge and Chips" />
-  &nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/sidShubham116/react-native-frame/main/assets/showcase-2.png" width="45%" alt="Tabs, Checkbox, Radio, Slider, Progress and Skeleton" />
-</p>
-
 ## Features
 
 - **26 components** covering layout, typography, inputs, actions, feedback and navigation
