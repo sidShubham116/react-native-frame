@@ -734,6 +734,15 @@ type Theme = {
 
 Every component also exports its own `*Props` type (e.g. `ButtonProps`, `DialogProps`, `TabsProps`).
 
+## Author
+
+Built and maintained by **Shubham Mishra** — a developer who loves crafting smooth, polished mobile experiences. `react-native-frame` started as a personal toolkit for shipping React Native apps faster, and is now open-source for everyone.
+
+If this library saves you time, a ⭐ on [GitHub](https://github.com/sidShubham116/react-native-frame) genuinely helps — and issues, ideas, and pull requests are always welcome.
+
+- 🐙 GitHub: [@sidShubham116](https://github.com/sidShubham116)
+- 📦 npm: [react-native-frame](https://www.npmjs.com/package/react-native-frame)
+
 ## License
 
-MIT — made by [Shubham Mishra](https://github.com/sidShubham116)
+MIT © [Shubham Mishra](https://github.com/sidShubham116)
