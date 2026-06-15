@@ -23,6 +23,10 @@ export type AccordionProps = {
  * Collapsible section — content ki natural height measure karke
  * usse 0 tak spring animate karta hai. New Architecture (Fabric) par
  * bhi clean chalta hai (LayoutAnimation use nahi hota).
+ *
+ * Measuring view absolute hai taaki uski height parent ki animated
+ * height se constrain na ho — isse iOS + Android dono par measurement
+ * sahi aata hai (clipped container ke andar measure karne wali bug nahi).
  */
 export function Accordion({
   title,
@@ -34,34 +38,29 @@ export function Accordion({
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [contentHeight, setContentHeight] = useState(0);
   const progress = useRef(new Animated.Value(defaultExpanded ? 1 : 0)).current;
+  const measured = contentHeight > 0;
 
   useEffect(() => {
     Animated.spring(progress, {
       toValue: expanded ? 1 : 0,
-      useNativeDriver: false, // height animate ho rahi hai
+      useNativeDriver: false, // height + opacity animate ho rahe hain
       speed: 14,
-      bounciness: 4,
+      bounciness: 5,
     }).start();
   }, [expanded, progress]);
 
   const onContentLayout = (e: LayoutChangeEvent) => {
-    const h = e.nativeEvent.layout.height;
+    const h = Math.round(e.nativeEvent.layout.height);
     if (h > 0 && h !== contentHeight) setContentHeight(h);
   };
 
-  // Measure hone se pehle: expanded ho to natural height (undefined), warna 0
-  const measured = contentHeight > 0;
-  const height = measured
-    ? progress.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, contentHeight],
-      })
-    : expanded
-      ? undefined
-      : 0;
   const rotate = progress.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '180deg'],
+  });
+  const animatedHeight = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, contentHeight],
   });
 
   return (
@@ -87,9 +86,20 @@ export function Accordion({
         </Animated.Text>
       </Pressable>
 
-      <Animated.View style={{ height, opacity: progress, overflow: 'hidden' }}>
-        {/* In-flow wrapper — iski natural height measure hoti hai, parent clip karta hai */}
-        <View onLayout={onContentLayout} style={styles.body}>
+      <Animated.View
+        style={{
+          // Measure hone tak: collapsed ho to invisible (flash na ho), expanded ho to natural
+          height: measured ? animatedHeight : undefined,
+          opacity: measured ? progress : expanded ? 1 : 0,
+          overflow: 'hidden',
+        }}
+      >
+        <View
+          onLayout={onContentLayout}
+          // Measure hone ke baad absolute — taaki natural height pe rahe aur
+          // parent ki clipped height isse compress na kare.
+          style={measured ? [styles.body, styles.measure] : styles.body}
+        >
           {typeof children === 'string' ? (
             <Text variant="body">{children}</Text>
           ) : (
@@ -116,5 +126,6 @@ const styles = StyleSheet.create({
   },
   title: { flexShrink: 1 },
   chevron: { fontSize: 18, fontWeight: '700' },
+  measure: { position: 'absolute', left: 0, right: 0, top: 0 },
   body: { paddingHorizontal: 16, paddingBottom: 14 },
 });
